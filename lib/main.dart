@@ -35,7 +35,6 @@ class _WaveState extends State<WavePage> with SingleTickerProviderStateMixin {
       duration: const Duration(milliseconds: 1000),
     );
     _animationController.repeat(); //リピート設定
-    //_animationController.forward();
   }
 
   @override
@@ -44,7 +43,8 @@ class _WaveState extends State<WavePage> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  double a(double b) {
+  // サーファーの動きを制御する関数　いわゆる三角関数で上下させる
+  double f(double b) {
     final height = MediaQuery.of(context).size.height; // 画面の高さ
     final y = math.sin(b * 2 * math.pi) * 30 + height * 0.4;
     return y;
@@ -62,7 +62,7 @@ class _WaveState extends State<WavePage> with SingleTickerProviderStateMixin {
                   context: context,
                   waveControllerValue: _animationController.value,
                   offset: 0),
-              // 赤色をClipPathでくり抜いている
+              // 青色をClipPathでくり抜いている
               child: Container(color: Colors.blue),
             ),
             ClipPath(
@@ -70,7 +70,7 @@ class _WaveState extends State<WavePage> with SingleTickerProviderStateMixin {
                   context: context,
                   waveControllerValue: _animationController.value,
                   offset: 0.3),
-              // 赤色をClipPathでくり抜いている
+              // うすい青色をClipPathでくり抜いている
               child: Container(color: Colors.blueAccent.withOpacity(0.3)),
             ),
             ClipPath(
@@ -78,12 +78,13 @@ class _WaveState extends State<WavePage> with SingleTickerProviderStateMixin {
                   context: context,
                   waveControllerValue: _animationController.value,
                   offset: 0.7),
-              // 赤色をClipPathでくり抜いている
+              // 良い感じの青色をClipPathでくり抜いている
               child: Container(color: Colors.lightBlue.withOpacity(0.3)),
             ),
+            // サーファーのアニメーション
             Positioned(
                 left: MediaQuery.of(context).size.width / 2,
-                top: a(_animationController.value),
+                top: f(_animationController.value), // 高さが sin関数に従って変化する
                 width: 100,
                 child: Surfer(
                   waveControllerValue: _animationController.value,
@@ -148,7 +149,6 @@ class WaveClipper extends CustomClipper<Path> {
     return path;
   }
 
-  //再び切り抜くタイミングか？
   @override
   bool shouldReclip(WaveClipper oldClipper) =>
       waveControllerValue != oldClipper.waveControllerValue;
